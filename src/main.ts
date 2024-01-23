@@ -1,4 +1,5 @@
 import { Devvit } from '@devvit/public-api';
+import { getBasedCountAndPills, getFormattedPills } from './databased_queries.js';
 
 Devvit.configure({
   redditAPI: true,
@@ -6,55 +7,20 @@ Devvit.configure({
 })
 
 const dynamicForm = Devvit.createForm((data) => {
-  const pill_names: string[] = data.pills.map((pill: Pill) => `- ${pill.name}`);
   return {
     fields: [
-      { name: 'username', label: 'USERNAME', type: 'string', defaultValue: data.user_name, disabled: true, },
-      { name: 'based_count', label: `BASED COUNT`, type: 'string', defaultValue: data.based_count.toString(), disabled: true },
-      { name: 'pills', label: 'PILLS', type: 'paragraph', defaultValue: Array.from(pill_names).join("\n"), disabled: true, lineHeight: 20 },
+      { name: 'username', label: 'USERNAME', type: 'string', defaultValue: data.name, disabled: true, },
+      { name: 'based_count', label: `BASED COUNT`, type: 'string', defaultValue: data.basedCount, disabled: true },
+      { name: 'rank', label: `RANK`, type: 'string', defaultValue: data.rank, disabled: true },
+      { name: 'pill_count', label: `TOTAL PILL COUNT`, type: 'string', defaultValue: data.pillCount, disabled: true },
+      {
+        name: 'pills', label: 'PILLS', type: 'paragraph', defaultValue: getFormattedPills(10, data.pills), disabled: true, lineHeight: 10,
+        helpText: "LATEST 10 PILLS. TO SEE MORE VISIT USER'S PROFILE ON https://basedcount.com",
+      },
     ],
-    title: `Based Count Profile for u/${data.username}`,
+    title: `Based Count Profile for u/balls`,
   }
 }, async ({ values }, ctx) => { })
-
-
-interface Pill {
-  name: string;
-  comment_permalink: string;
-  from_user: string;
-  date: number;
-  amount: number;
-}
-
-interface BasedCountAndPillsData {
-  user_name: string;
-  based_count: number;
-  pills: Pill[];
-}
-
-async function getBasedCountAndPills(username: string) {
-  const limit = 10;
-  const url = `https://basedcountdbapi-1-d0307140.deta.app/get_based_count_and_pills/${username}?limit=${limit}`;
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'accept': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    const data: BasedCountAndPillsData = {
-      user_name: username,
-      based_count: 0,
-      pills: [],
-    };
-    return data
-  }
-
-  const data: BasedCountAndPillsData = await response.json();
-  return data;
-}
 
 Devvit.addMenuItem({
   label: 'Based Profile',

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "basedprofile",
-  "version": "0.0.8",
+  "version": "0.0.12",
   "license": "BSD-3-Clause",
   "type": "module",
   "scripts": {
