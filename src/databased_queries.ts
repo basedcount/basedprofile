@@ -57,13 +57,18 @@ function createDefaultStructure(username: string): BasedProfile {
 }
 
 export function getFormattedPills(limit: number, based_profile: BasedProfile): string {
-    console.log(based_profile);
     const filtered_pills = based_profile.pills
         .filter((pill: Pill) => pill.name.length <= 40)
         .slice(-limit)
         .reverse();
-    const pill_names: string[] = filtered_pills.map((pill: Pill) => `- ${pill.name}`);
-    return pill_names.join("\n");
+
+    if (filtered_pills.length != 0) {
+        const pill_names: string[] = filtered_pills.map((pill: Pill) => `- ${pill.name}`);
+        return pill_names.join("\n");
+    } else {
+        return "No pills available for display.";
+    }
+
 }
 
 export async function getBasedCountAndPills(username: string): Promise<BasedProfile> {
