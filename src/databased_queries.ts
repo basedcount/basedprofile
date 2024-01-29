@@ -36,7 +36,7 @@ interface PinnedPill {
     date: number
 }
 
-function createDefaultStructure(): BasedProfile {
+function createDefaultStructure(username: string): BasedProfile {
     return {
         basedCount: 0,
         claimed: false,
@@ -45,7 +45,7 @@ function createDefaultStructure(): BasedProfile {
         deletedCount: 0,
         flairCount: 0,
         flairs: [],
-        name: '',
+        name: username,
         ok: false,
         pillCount: 0,
         pills: [],
@@ -57,6 +57,7 @@ function createDefaultStructure(): BasedProfile {
 }
 
 export function getFormattedPills(limit: number, based_profile: BasedProfile): string {
+    console.log(based_profile);
     const filtered_pills = based_profile.pills
         .filter((pill: Pill) => pill.name.length <= 40)
         .slice(-limit)
@@ -67,17 +68,19 @@ export function getFormattedPills(limit: number, based_profile: BasedProfile): s
 
 export async function getBasedCountAndPills(username: string): Promise<BasedProfile> {
     const url = `https://basedcount.com/api/user/${username}`;
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'accept': 'application/json',
-        },
-    });
 
-    if (!response.ok) {
-        return createDefaultStructure();
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'accept': 'application/json',
+            },
+        });
+
+        const data: BasedProfile = await response.json();
+        return data;
+
+    } catch (error) {
+        return createDefaultStructure(username);
     }
-
-    const data: BasedProfile = await response.json();
-    return data;
 }

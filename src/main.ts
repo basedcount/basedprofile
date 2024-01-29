@@ -1,5 +1,5 @@
 import { Devvit } from '@devvit/public-api';
-import { getBasedCountAndPills, getFormattedPills } from './databased_queries.js';
+import { BasedProfile, getBasedCountAndPills, getFormattedPills } from './databased_queries.js';
 
 Devvit.configure({
   redditAPI: true,
@@ -10,17 +10,20 @@ const dynamicForm = Devvit.createForm((data) => {
   return {
     fields: [
       { name: 'username', label: 'USERNAME', type: 'string', defaultValue: data.name, disabled: true, },
-      { name: 'based_count', label: `BASED COUNT`, type: 'string', defaultValue: data.basedCount, disabled: true },
+      { name: 'based_count', label: `BASED COUNT`, type: 'string', defaultValue: `${data.basedCount}`, disabled: true },
       { name: 'rank', label: `RANK`, type: 'string', defaultValue: data.rank, disabled: true },
-      { name: 'pill_count', label: `TOTAL PILL COUNT`, type: 'string', defaultValue: data.pillCount, disabled: true },
+      { name: 'pill_count', label: `TOTAL PILL COUNT`, type: 'string', defaultValue: `${data.pillCount}`, disabled: true },
       {
-        name: 'pills', label: 'PILLS', type: 'paragraph', defaultValue: getFormattedPills(10, data.pills), disabled: true, lineHeight: 10,
-        helpText: "LATEST 10 PILLS. TO SEE MORE VISIT USER'S PROFILE ON https://basedcount.com",
+        name: 'pills', label: 'PILLS', type: 'paragraph', defaultValue: getFormattedPills(10, data as BasedProfile), disabled: true, lineHeight: 10,
+        helpText: "LATEST 10 PILLS (EXCLUDING VERY LONG PILLS). TO SEE MORE VISIT USER'S PROFILE ON https://basedcount.com",
       },
     ],
-    title: `Based Count Profile for u/balls`,
+    title: `Based Count Profile for ${data.name}`,
+    acceptLabel: `View all pills`,
   }
-}, async ({ values }, ctx) => { })
+}, async ({ values }, ctx) => {
+  return ctx.ui.navigateTo(`https://basedcount.com/u/${values.username}`)
+})
 
 Devvit.addMenuItem({
   label: 'Based Profile',
