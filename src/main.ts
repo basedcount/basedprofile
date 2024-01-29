@@ -16,6 +16,7 @@ const dynamicForm = Devvit.createForm((data) => {
       {
         name: 'pills', label: 'PILLS', type: 'paragraph', defaultValue: getFormattedPills(10, data as BasedProfile), disabled: true, lineHeight: 10,
         helpText: "LATEST 10 PILLS (EXCLUDING VERY LONG PILLS). TO SEE MORE VISIT USER'S PROFILE ON https://basedcount.com",
+        placeholder: "No pills available for display",
       },
     ],
     title: `Based Count Profile for ${data.name}`,
