@@ -22,7 +22,9 @@ const dynamicForm = Devvit.createForm((data) => {
     acceptLabel: `View all pills`,
   }
 }, async ({ values }, ctx) => {
-  return ctx.ui.navigateTo(`https://basedcount.com/u/${values.username}`)
+  return ctx.ui.navigateTo(
+    `https://basedcount.com/u/${values.username}?utm_source=Reddit&utm_medium=bots&utm_campaign=basedprofile`
+  );
 })
 
 Devvit.addMenuItem({
@@ -55,7 +57,9 @@ Devvit.addMenuItem({
     }
 
     let authorName = (await post).authorName;
-    return context.ui.navigateTo(`https://basedcount.com/u/${authorName}`)
+    return context.ui.navigateTo(
+      `https://basedcount.com/u/${authorName}?utm_source=Reddit&utm_medium=bots&utm_campaign=basedprofile`
+    );
   }
 });
 
